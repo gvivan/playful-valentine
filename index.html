@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Be My Valentine, Mihikaa?</title>
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #ffeef0;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    .container {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 2em 3em;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    .heart {
+      font-size: 5rem;
+      animation: bounce 1s infinite alternate;
+    }
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-20px); }
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin: 0.5em 0;
+      color: #ff4f81;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    p {
+      font-size: 1.3rem;
+      margin-bottom: 1em;
+      color: #ff6384;
+    }
+    /* Button container that holds our two buttons */
+    .btn-container {
+      position: relative;
+      width: 100%;
+      height: 80px;
+      margin-top: 20px;
+    }
+    .btn {
+      background: #ff4f81;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+      position: absolute;
+    }
+    .btn:hover {
+      background: #ff2e6c;
+    }
+    /* Floating hearts effect */
+    .floating-hearts {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .floating-hearts i {
+      position: absolute;
+      font-size: 2rem;
+      color: rgba(255, 79, 129, 0.7);
+      animation: float 4s linear infinite;
+    }
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      25% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-10vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-hearts" id="hearts"></div>
+  <div class="container" id="card">
+    <div class="heart">💖</div>
+    <h1>Hey Mihikaa!</h1>
+    <p>Will you be my Valentine and make my heart skip a beat?</p>
+    <div class="btn-container" id="btnContainer">
+      <button class="btn" id="yesBtn" onclick="handleYes()">Absolutely, Yes!</button>
+      <button class="btn" id="noBtn">No</button>
+    </div>
+  </div>
+
+  <script>
+    // Redirect to valentine.html when she clicks yes.
+    function handleYes() {
+      window.location.href = "valentine.html";
+    }
+
+    const containerEl = document.getElementById('btnContainer');
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const gap = 20; // gap between buttons
+
+    // Initialize positions so the group is centered within the button container.
+    function initButtonPositions() {
+      const containerWidth = containerEl.clientWidth;
+      const containerHeight = containerEl.clientHeight;
+      
+      const yesWidth = yesBtn.offsetWidth;
+      const noWidth = noBtn.offsetWidth;
+      const groupWidth = yesWidth + gap + noWidth;
+      
+      // Center the group horizontally.
+      const startX = (containerWidth - groupWidth) / 2;
+      // Vertically center (assuming buttons have similar heights).
+      const centerY = (containerHeight - yesBtn.offsetHeight) / 2;
+      
+      yesBtn.style.left = startX + 'px';
+      yesBtn.style.top = centerY + 'px';
+      
+      noBtn.style.left = (startX + yesWidth + gap) + 'px';
+      noBtn.style.top = centerY + 'px';
+    }
+    
+    // Reposition the "No" button to a random spot within the container,
+    // ensuring it does not overlap the "Yes" button.
+    function repositionNoButton() {
+      const containerWidth = containerEl.clientWidth;
+      const containerHeight = containerEl.clientHeight;
+      const noWidth = noBtn.offsetWidth;
+      const noHeight = noBtn.offsetHeight;
+      
+      // Get "Yes" button's position relative to the container.
+      const yesX = yesBtn.offsetLeft;
+      const yesY = yesBtn.offsetTop;
+      const yesWidth = yesBtn.offsetWidth;
+      const yesHeight = yesBtn.offsetHeight;
+      
+      let randomX, randomY, safe = false;
+      // Try up to 100 times to find a spot that doesn't overlap "Yes".
+      for (let i = 0; i < 100; i++) {
+        randomX = Math.random() * (containerWidth - noWidth);
+        randomY = Math.random() * (containerHeight - noHeight);
+        // Check for overlap.
+        if (!(randomX < yesX + yesWidth && randomX + noWidth > yesX &&
+              randomY < yesY + yesHeight && randomY + noHeight > yesY)) {
+          safe = true;
+          break;
+        }
+      }
+      if (!safe) {
+        // Fallback: reset to initial positions.
+        initButtonPositions();
+        return;
+      }
+      noBtn.style.left = randomX + 'px';
+      noBtn.style.top = randomY + 'px';
+    }
+    
+    // When the mouse moves within the button container, check if it's too close to the "No" button.
+    containerEl.addEventListener('mousemove', (e) => {
+      const rect = containerEl.getBoundingClientRect();
+      // Mouse position relative to container.
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      
+      // Get the "No" button center.
+      const noX = parseFloat(noBtn.style.left) + noBtn.offsetWidth / 2;
+      const noY = parseFloat(noBtn.style.top) + noBtn.offsetHeight / 2;
+      const distance = Math.hypot(mouseX - noX, mouseY - noY);
+      
+      if (distance < 80) {
+        repositionNoButton();
+      }
+    });
+    
+    // Initialize positions on load and update on window resize.
+    window.addEventListener('load', initButtonPositions);
+    window.addEventListener('resize', initButtonPositions);
+    
+    // Create floating hearts for extra charm.
+    const heartsContainer = document.getElementById('hearts');
+    const heartCount = 20;
+    for (let i = 0; i < heartCount; i++) {
+      const heart = document.createElement('i');
+      heart.textContent = "💖";
+      heart.style.left = Math.random() * 100 + "%";
+      heart.style.animationDelay = Math.random() * 4 + "s";
+      heart.style.fontSize = (Math.random() * 1 + 1.5) + "rem";
+      heartsContainer.appendChild(heart);
+    }
+  </script>
+</body>
+</html>
