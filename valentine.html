@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>You Made My Heart Skip a Beat!</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #f6d365, #fda085);
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+      color: #fff;
+    }
+    /* Confetti container behind the main content */
+    .confetti-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .container {
+      text-align: center;
+      position: relative;
+      z-index: 1; /* Ensures text stays above the confetti */
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+    }
+    p {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+    }
+    .heart {
+      font-size: 6rem;
+      animation: heartbeat 1.5s infinite;
+    }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+    /* Style for individual confetti pieces */
+    .confetti {
+      position: absolute;
+      opacity: 0.8;
+      animation: confettiFall 4s linear infinite;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Confetti container (behind the text) -->
+  <div class="confetti-container" id="confettiContainer"></div>
+  
+  <div class="container">
+    <div class="heart">💖</div>
+    <h1>You Made My Heart Skip a Beat!</h1>
+    <p>Every moment with you is pure magic. I can't wait for our next adventure together!</p>
+  </div>
+  
+  <script>
+    // Create playful confetti
+    const confettiContainer = document.getElementById('confettiContainer');
+    const confettiCount = 50;
+    
+    for (let i = 0; i < confettiCount; i++) {
+      const confetti = document.createElement('div');
+      confetti.classList.add('confetti');
+      confetti.style.left = Math.random() * 100 + 'vw';
+      // Random color for each confetti piece.
+      confetti.style.background = `hsl(${Math.random() * 360}, 100%, 75%)`;
+      confetti.style.animationDelay = Math.random() * 4 + 's';
+      // Random dimensions for a playful effect
+      const size = Math.random() * 10 + 5;
+      confetti.style.width = size + 'px';
+      confetti.style.height = size + 'px';
+      
+      confettiContainer.appendChild(confetti);
+    }
+  </script>
+</body>
+</html>
